@@ -12,3 +12,5 @@ MainScript=Main.qml
 Screenshot=docs/previews/default.png
 TranslationsDirectory=translations
 QtVersion=6
+
+ConfigFile=configs/default.conf

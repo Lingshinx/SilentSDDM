@@ -6,9 +6,8 @@
   makeWrapper,
   symlinkJoin,
   gitRev ? "unknown",
-  theme ? "default",
+  theme ? ./configs/default.conf,
   extraBackgrounds ? [],
-  extraConfigs ? [],
   # override the below to false if not on wayland (only matters for test script)
   withWayland ? true,
   withLayerShellQt ? true,
@@ -55,14 +54,10 @@ in
       mkdir -p ${basePath}
       cp -r $src/* ${basePath}
 
-      chmod +w ${basePath}/metadata.desktop
-      echo 'ConfigFile=configs/${theme}.conf' >> ${basePath}/metadata.desktop
+      cp ${theme} ${basePath}/default.conf
       ''] ++ optional (notEmpty extraBackgrounds) ''
       chmod -R +w ${basePath}/backgrounds
       cp ${toString extraBackgrounds} ${basePath}/backgrounds/
-      '' ++ optional (notEmpty extraConfigs) ''
-      chmod -R +w ${basePath}/configs
-      cp ${toString extraConfigs} ${basePath}/configs/
       '');
 
     passthru.test = symlinkJoin {
