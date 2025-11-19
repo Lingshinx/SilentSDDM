@@ -54,7 +54,8 @@ in
       mkdir -p ${basePath}
       cp -r $src/* ${basePath}
 
-      cp ${theme} ${basePath}/default.conf
+      chmod +w ${basePath}/configs/default.conf
+      cp ${theme} ${basePath}/configs/default.conf
       ''] ++ optional (notEmpty extraBackgrounds) ''
       chmod -R +w ${basePath}/backgrounds
       cp ${toString extraBackgrounds} ${basePath}/backgrounds/
