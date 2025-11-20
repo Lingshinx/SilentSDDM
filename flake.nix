@@ -16,6 +16,7 @@
     ];
     forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f (import nixpkgs {inherit system;}));
   in {
+    nixosModules.silent-sddm = ./module.nix;
     packages = forAllSystems (pkgs: rec {
       # you may test these themes with `nix run .#default.test`
       # similiarly `nix run .#example.test` will work too
