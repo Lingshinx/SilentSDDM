@@ -3,38 +3,39 @@
   stdenvNoCC,
   kdePackages,
   qt6,
-  writeText,
   makeWrapper,
   symlinkJoin,
   gitRev ? "unknown",
-  theme ? "default",
-  theme-overrides ? {},
+  theme ? ./configs/default.conf,
   extraBackgrounds ? [],
   # override the below to false if not on wayland (only matters for test script)
   withWayland ? true,
   withLayerShellQt ? true,
 }: let
-  inherit (lib) cleanSource licenses;
   inherit
     (lib)
+    concatStringsSep 
+    cleanSource
+    licenses
     attrValues
     substring
-    readFile
-    concatStringsSep
-    map
+    optional
+    length
     ;
-  inherit (lib.generators) toINI;
+
   inherit (stdenvNoCC) mkDerivation;
 
-  propagatedBuildInputs = attrValues {
-    inherit (kdePackages) qtmultimedia qtsvg qtvirtualkeyboard;
-  };
+  propagatedBuildInputs = with kdePackages; [
+    qtmultimedia
+    qtsvg
+    qtvirtualkeyboard
+  ];
 
   sddm-wrapped = kdePackages.sddm.override {
     extraPackages =
       propagatedBuildInputs
-      ++ lib.optionals withWayland [qt6.qtwayland]
-      ++ lib.optionals withLayerShellQt [kdePackages.layer-shell-qt];
+      ++ optional withWayland qt6.qtwayland
+      ++ optional withLayerShellQt kdePackages.layer-shell-qt;
   };
 in
   mkDerivation (final: {
@@ -48,21 +49,17 @@ in
 
     installPhase = let
       basePath = "$out/share/sddm/themes/${final.pname}";
-      overrides' = toINI {} theme-overrides;
-      overrides = builtins.replaceStrings ["="] [" = "] overrides';
-    in ''
+      notEmpty = list: length list != 0;
+    in concatStringsSep "\n" ([''
       mkdir -p ${basePath}
       cp -r $src/* ${basePath}
 
-      substituteInPlace ${basePath}/metadata.desktop \
-        --replace-warn configs/default.conf configs/${theme}.conf
-
-      chmod +w ${basePath}/configs/${theme}.conf
-      echo '${overrides}' >> ${basePath}/configs/${theme}.conf
-
+      chmod +w ${basePath}/configs/default.conf
+      cp ${theme} ${basePath}/configs/default.conf
+      ''] ++ optional (notEmpty extraBackgrounds) ''
       chmod -R +w ${basePath}/backgrounds
-      ${concatStringsSep "\n" (map (bg: "cp ${bg} ${basePath}/backgrounds/${bg.name}") extraBackgrounds)}
-    '';
+      cp ${toString extraBackgrounds} ${basePath}/backgrounds/
+      '');
 
     passthru.test = symlinkJoin {
       name = "test-sddm-silent";
