@@ -31,7 +31,7 @@ with types;
       inherit (silent) theme extraBackgrounds;
     };
   in mkIf enabled {
-    environment.systemPackages = silent-sddm;
+    environment.systemPackages = [silent-sddm];
     services.displayManager.sddm = {
       extraPackages = silent-sddm.propagatedBuildInputs;
       settings.General = {
