@@ -29,7 +29,7 @@ with types; {
     silent = config.services.displayManager.sddm.silent;
     theme = config.services.displayManager.sddm.theme;
     enabled = theme == silent-sddm.pname;
-    silent-sddm = inputs.silentSDDM.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+    silent-sddm = self.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
       inherit (silent) theme extraBackgrounds;
     };
   in

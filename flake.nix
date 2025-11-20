@@ -11,14 +11,14 @@
         self,
         config,
         withSystem,
-        importApply,
+        flake-parts-lib,
         ...
       } @ top: {
         systems = [
           "x86_64-linux"
           "aarch64-linux"
         ];
-        flake.nixosModules.default = importApply ./module.nix {inherit self;};
+        flake.nixosModules.default = flake-parts-lib.importApply ./module.nix {inherit self;};
         perSystem = {pkgs, ...}: {
           packages.default = pkgs.callPackage ./. {
             gitRev = self.rev or self.dirtyRev or "unknown";
