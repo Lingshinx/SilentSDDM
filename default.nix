@@ -17,7 +17,6 @@
     concatStringsSep 
     cleanSource
     licenses
-    attrValues
     substring
     optional
     length

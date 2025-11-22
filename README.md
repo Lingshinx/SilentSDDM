@@ -8,7 +8,7 @@ The git repo is lightweight -- only about 1.7MB, fast to clone and taking no spa
 
 ```nix
 {pkgs, inputs, ...}: {
-  imports = [inputs.silentSDDM.nixosModules.silent-sddm];
+  imports = [inputs.silentSDDM.nixosModules.default];
 
   qt.enable = true;
   services.displayManager.sddm = {
