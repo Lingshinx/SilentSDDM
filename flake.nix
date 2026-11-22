@@ -21,6 +21,6 @@
       }
     )
     // {
-      nixosModules.default = ./module.nix;
+      nixosModules.default = import ./module.nix {inherit self;};
     };
 }

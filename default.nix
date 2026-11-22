@@ -51,8 +51,10 @@ in
         mkdir -p ${basePath}
         cp -r $src/* ${basePath}
 
-        chmod +w ${basePath}/configs/default.conf
-        cp $theme ${basePath}/configs/default.conf
+        if test -n "$theme"; then
+          chmod +w ${basePath}/configs/default.conf
+          cp $theme ${basePath}/configs/default.conf
+        fi
         chmod +w ${basePath}/backgrounds/
         for bg in $extraBackgrounds; do
           cp "$bg" "${basePath}/backgrounds/$(stripHash "$bg")"
